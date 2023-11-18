@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _controller.addListener(() {
       setState(() {});
-    }) ;
+    });
   }
 
   @override
@@ -43,35 +43,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _HomeList extends StatelessWidget {
   final List<String> values;
+
   const _HomeList({required this.values});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        itemBuilder: (_, index) {
-          final firstWordLetter = values[index][0].toUpperCase();
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor,
-              radius: 36,
-              child: CircleAvatar(
-                radius: 24,
-                child: Text(firstWordLetter),
-              ),
+      child: values.isEmpty
+          ? const Center(
+              child: Text('No available data'),
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              itemBuilder: (_, index) {
+                final firstWordLetter = values[index][0].toUpperCase();
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    radius: 36,
+                    child: CircleAvatar(
+                      radius: 24,
+                      child: Text(firstWordLetter),
+                    ),
+                  ),
+                  title: Text(values[index]),
+                );
+              },
+              separatorBuilder: (_, index) {
+                return Divider(
+                  thickness: 2,
+                  color: Colors.grey.shade200,
+                );
+              },
+              itemCount: values.length,
             ),
-            title: Text(values[index]),
-          );
-        },
-        separatorBuilder: (_, index) {
-          return Divider(
-            thickness: 2,
-            color: Colors.grey.shade200,
-          );
-        },
-        itemCount: values.length,
-      ),
     );
   }
 }
@@ -79,6 +84,7 @@ class _HomeList extends StatelessWidget {
 class _InputFooter extends StatelessWidget {
   final TextEditingController _inputController = TextEditingController();
   final Function(String) onTap;
+
   _InputFooter({required this.onTap});
 
   @override
@@ -108,8 +114,7 @@ class _InputFooter extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: Material(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(60)
-                ),
+                    borderRadius: BorderRadius.circular(60)),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(60),
                   onTap: () {
