@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:state_management_sample/src/home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,6 +9,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final HomeController _controller = HomeController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {});
+    }) ;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: const Column(
+      body: Column(
         children: [
-          _HomeList(),
-          _InputFooter()
+          _HomeList(values: _controller.myValues),
+          _InputFooter(onTap: (newValue) => _controller.addNewValue(newValue))
         ],
       ),
     );
@@ -31,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _HomeList extends StatelessWidget {
-  const _HomeList();
+  final List<String> values;
+  const _HomeList({required this.values});
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +51,17 @@ class _HomeList extends StatelessWidget {
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 16),
         itemBuilder: (_, index) {
+          final firstWordLetter = values[index][0].toUpperCase();
           return ListTile(
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColor,
               radius: 36,
               child: CircleAvatar(
                 radius: 24,
-                child: Text(index.toString()),
+                child: Text(firstWordLetter),
               ),
             ),
-            title: Text("Index: $index"),
+            title: Text(values[index]),
           );
         },
         separatorBuilder: (_, index) {
@@ -57,14 +70,16 @@ class _HomeList extends StatelessWidget {
             color: Colors.grey.shade200,
           );
         },
-        itemCount: 20,
+        itemCount: values.length,
       ),
     );
   }
 }
 
 class _InputFooter extends StatelessWidget {
-  const _InputFooter();
+  final TextEditingController _inputController = TextEditingController();
+  final Function(String) onTap;
+  _InputFooter({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +92,7 @@ class _InputFooter extends StatelessWidget {
           children: [
             Expanded(
               child: TextFormField(
+                controller: _inputController,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -96,7 +112,10 @@ class _InputFooter extends StatelessWidget {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(60),
-                  onTap: () {},
+                  onTap: () {
+                    onTap.call(_inputController.text);
+                    _inputController.clear();
+                  },
                   child: Ink(
                     height: 50,
                     width: 50,
