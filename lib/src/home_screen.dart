@@ -21,10 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: const Column(
-        children: [
-          _HomeList(),
-          _InputFooter()
-        ],
+        children: [_HomeList(), _InputFooter()],
       ),
     );
   }
@@ -36,10 +33,11 @@ class _HomeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (_, index) {
           return ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColor,
               radius: 36,
@@ -48,13 +46,14 @@ class _HomeList extends StatelessWidget {
                 child: Text(index.toString()),
               ),
             ),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.remove_circle_outline,
+                color: Colors.red,
+              ),
+            ),
             title: Text("Index: $index"),
-          );
-        },
-        separatorBuilder: (_, index) {
-          return Divider(
-            thickness: 2,
-            color: Colors.grey.shade200,
           );
         },
         itemCount: 20,
@@ -92,8 +91,7 @@ class _InputFooter extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: Material(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(60)
-                ),
+                    borderRadius: BorderRadius.circular(60)),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(60),
                   onTap: () {},
