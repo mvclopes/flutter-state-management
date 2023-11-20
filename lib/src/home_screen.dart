@@ -8,6 +8,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> myValuesStub = List.generate(20, (index) => 'Index: $index');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,53 +22,72 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: const Column(
-        children: [_HomeList(), _InputFooter()],
+      body: Column(
+        children: [
+          _HomeList(
+            values: myValuesStub,
+            onTap: (index) {},
+          ),
+          _InputFooter(
+            onTap: (text) {},
+          )
+        ],
       ),
     );
   }
 }
 
 class _HomeList extends StatelessWidget {
-  const _HomeList();
+  final List<String> values;
+  final Function(int) onTap;
+
+  const _HomeList({required this.values, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        itemBuilder: (_, index) {
-          return ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 8),
-            leading: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor,
-              radius: 36,
-              child: CircleAvatar(
-                radius: 24,
-                child: Text(index.toString()),
-              ),
+    return values.isEmpty
+        ? const Center(
+            child: Text('No available data'),
+          )
+        : Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              itemBuilder: (_, index) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    radius: 36,
+                    child: CircleAvatar(
+                      radius: 24,
+                      child: Text(index.toString()),
+                    ),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () => onTap.call(index),
+                    icon: const Icon(
+                      Icons.remove_circle_outline,
+                      color: Colors.red,
+                    ),
+                  ),
+                  title: Text("Index: $index"),
+                );
+              },
+              itemCount: 20,
             ),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.remove_circle_outline,
-                color: Colors.red,
-              ),
-            ),
-            title: Text("Index: $index"),
           );
-        },
-        itemCount: 20,
-      ),
-    );
   }
 }
 
 class _InputFooter extends StatelessWidget {
-  const _InputFooter();
+  final Function(String) onTap;
+
+  const _InputFooter({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController inputController = TextEditingController();
+
     return Container(
       color: Theme.of(context).primaryColor.withAlpha(80),
       child: Padding(
@@ -94,7 +115,10 @@ class _InputFooter extends StatelessWidget {
                     borderRadius: BorderRadius.circular(60)),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(60),
-                  onTap: () {},
+                  onTap: () {
+                    onTap.call(inputController.text);
+                    inputController.clear();
+                  },
                   child: Ink(
                     height: 50,
                     width: 50,
