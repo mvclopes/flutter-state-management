@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:state_management_sample/src/home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> myValuesStub = List.generate(20, (index) => 'Index: $index');
+  final HomeController _controller = HomeController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           _HomeList(
-            values: myValuesStub,
+            values: _controller.myValues,
             onTap: (index) {},
           ),
           _InputFooter(
