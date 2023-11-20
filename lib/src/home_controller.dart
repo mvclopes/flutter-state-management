@@ -8,4 +8,9 @@ class HomeController extends ChangeNotifier {
     _myValues.add(newValue);
     notifyListeners();
   }
+
+  void removeItem(int index) {
+    _myValues.removeAt(index);
+    notifyListeners();
+  }
 }
