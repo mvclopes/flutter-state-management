@@ -25,12 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          _HomeList(
-            values: _controller.myValues,
-            onTap: (index) {},
+          Expanded(
+            child: ValueListenableBuilder<List<String>>(
+              valueListenable: _controller.myValues,
+              builder: (context, myValues, child) {
+                return _HomeList(
+                  values: myValues,
+                  onTap: (index) => _controller.removeItem(index),
+                );
+              },
+            ),
           ),
           _InputFooter(
-            onTap: (text) {},
+            onTap: (text) => _controller.addNewItem(text),
           )
         ],
       ),
@@ -50,33 +57,31 @@ class _HomeList extends StatelessWidget {
         ? const Center(
             child: Text('No available data'),
           )
-        : Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              itemBuilder: (_, index) {
-                return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    radius: 36,
-                    child: CircleAvatar(
-                      radius: 24,
-                      child: Text(index.toString()),
-                    ),
-                  ),
-                  trailing: IconButton(
-                    onPressed: () => onTap.call(index),
-                    icon: const Icon(
-                      Icons.remove_circle_outline,
-                      color: Colors.red,
-                    ),
-                  ),
-                  title: Text("Index: $index"),
-                );
-              },
-              itemCount: 20,
-            ),
-          );
+        : ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          itemBuilder: (_, index) {
+            return ListTile(
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                radius: 36,
+                child: CircleAvatar(
+                  radius: 24,
+                  child: Text(index.toString()),
+                ),
+              ),
+              trailing: IconButton(
+                onPressed: () => onTap.call(index),
+                icon: const Icon(
+                  Icons.remove_circle_outline,
+                  color: Colors.red,
+                ),
+              ),
+              title: Text(values[index]),
+            );
+          },
+          itemCount: values.length,
+        );
   }
 }
 
@@ -98,6 +103,7 @@ class _InputFooter extends StatelessWidget {
           children: [
             Expanded(
               child: TextFormField(
+                controller: inputController,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -113,7 +119,8 @@ class _InputFooter extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: Material(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(60)),
+                  borderRadius: BorderRadius.circular(60),
+                ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(60),
                   onTap: () {
