@@ -71,10 +71,10 @@ class _HomeList extends StatelessWidget {
                       color: Colors.red,
                     ),
                   ),
-                  title: Text("Index: $index"),
+                  title: Text(values[index]),
                 );
               },
-              itemCount: 20,
+              itemCount: values.length,
             ),
           );
   }
